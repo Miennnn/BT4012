@@ -141,3 +141,17 @@ The full historical comparisons take substantially longer than the final noteboo
 ## Assignment handoff
 
 The code notebook is named `e1122358.ipynb`. The separate report should be named `e1122358.pdf`, be at most four pages, include the repository URL, and cover introduction, preprocessing/feature engineering, development/validation, exploration/final strategy, results/discussion and reflection. The supplied brief sets the report deadline to **25 October 2026, 23:59 Singapore time** and the competition deadline to **24 October 2026, 23:55 Singapore time**. This repository does not submit to Kaggle or select final leaderboard entries automatically.
+
+
+## CatBoost experiment
+
+A standalone CatBoost trial is available in `experiments/catboost_pipeline.py`. It fits only rows with known labels, uses the 165 `feat_*` columns, and keeps transaction IDs and time steps out of the model inputs. Time steps define three chronological validation windows: periods 1–15 to 16–29, 1–21 to 22–35, and 1–25 to 26–35. The final model is refit on all known labels using the median best iteration from those windows. The run is separate from the recorded reference/HGB blend.
+
+Install the experiment dependencies and run it from the repository root:
+
+```bash
+python -m pip install -r requirements-catboost.txt
+python -m experiments.catboost_pipeline --data-dir data --output outputs/catboost_submission.csv
+```
+
+The command writes class-1 probabilities in the sample-submission index order and saves validation details beside the CSV as `catboost_submission.metrics.json`. Use `--skip-validation` to train directly with the configured iteration count. No leaderboard result is recorded until the submission is evaluated by the competition.
