@@ -18,6 +18,7 @@ VALIDATION_WINDOWS = (
     (15, 16, 29),
     (21, 22, 35),
     (25, 26, 35),
+    (29, 30, 35),
 )
 
 
@@ -97,7 +98,7 @@ def new_model(iterations: int, verbose: bool):
 
     return CatBoostClassifier(
         iterations=iterations,
-        depth=7,
+        depth=8,
         learning_rate=0.03,
         loss_function="Logloss",
         eval_metric="AUC",
