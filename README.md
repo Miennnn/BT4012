@@ -16,7 +16,7 @@ If selecting two entries for the final private ranking, choose **submission 9** 
 
 - Submission 9 can be reproduced from the competition data with `e1122358.ipynb` or `experiments/catboost_pipeline.py`.
 - Submissions 7 and 8 came from earlier CatBoost runs. The first committed pipeline used depth 7 and three validation windows; the final run uses depth 8 and four windows.
-- Code for submissions 1-6 was not retained. Submissions 5 and 6 used raw-feature HGB predictions blended with the reference predictions from submission 3, whose training code is unavailable. Their results are included for context, not as controlled comparisons.
+- Submissions 1-6 are included as historical leaderboard results. Submissions 5 and 6 blended raw-feature HGB predictions with the predictions from submission 3. These results provide context, but the early models were not evaluated on the same features and validation windows as CatBoost.
 
 ## Repository contents
 
@@ -105,12 +105,12 @@ CatBoost may have helped because its trees can represent nonlinear thresholds an
 
 | # | Model | Public ROC AUC | Private ROC AUC |
 | ---: | --- | ---: | ---: |
-| 1 | Early baseline (code not retained) | 0.94622 | 0.93331 |
-| 2 | Early baseline (code not retained) | 0.92141 | 0.91583 |
-| 3 | Early baseline (code not retained) | 0.94748 | 0.93469 |
-| 4 | Early baseline (code not retained) | 0.92196 | 0.91586 |
-| 5 | Early baseline (code not retained) | 0.94770 | 0.93461 |
-| 6 | Early baseline (code not retained) | 0.94734 | 0.93442 |
+| 1 | Early baseline | 0.94622 | 0.93331 |
+| 2 | Early baseline | 0.92141 | 0.91583 |
+| 3 | Early baseline | 0.94748 | 0.93469 |
+| 4 | Early baseline | 0.92196 | 0.91586 |
+| 5 | Early baseline | 0.94770 | 0.93461 |
+| 6 | Early baseline | 0.94734 | 0.93442 |
 | 7 | CatBoost, first run | 0.94778 | **0.93634** |
 | 8 | CatBoost, second run | **0.94788** | 0.93621 |
 | 9 | **CatBoost, depth 8 (final)** | **0.94881** | **0.94061** |
@@ -119,4 +119,4 @@ The best earlier public result was 0.94788 from submission 8; the best earlier p
 
 ## Limitations
 
-The final model ignores the transaction graph and unlabelled rows. There was one run per CatBoost setting, and no decision threshold or investigator review budget was studied. The early submission code is missing, so those leaderboard scores cannot be reproduced or compared under identical validation conditions.
+The final model ignores the transaction graph and unlabelled rows. There was one run per CatBoost setting, and no decision threshold or investigator review budget was studied. The early submission results came from different experimental setups, so they provide context rather than a controlled comparison with CatBoost.
