@@ -6,11 +6,11 @@ Repository: [Miennnn/BT4012](https://github.com/Miennnn/BT4012)
 
 Classify Bitcoin transactions as licit (0) or illicit (1), using numerical transaction features and chronological validation. The official metric is **ROC AUC**, evaluated on a public 30% / private 70% split.
 
-**Best public score in the supplied screenshot: 0.94770.** Its predictions are a weighted average of 75% supplied reference predictions and 25% a histogram gradient boosting model trained on the 165 original numerical features. The earlier chat figure 0.97440 was a transcription discrepancy and is superseded by the screenshot.
+**Best public score reported for this project: 0.94881 (CatBoostClassifier, depth 8).** This supersedes the earlier 0.94770 score from the 75% reference + 25% raw-feature HGB blend. The CatBoost model uses the 165 original numerical features. The private score and final leaderboard standing are not available.
 
 ## Reproducibility scope
 
-`e1122358.ipynb` trains the gradient boosting component, validates it chronologically, and recreates the best submission from the included reference CSV. The reference CSV's source training code was not supplied. Therefore, the final prediction file can be reproduced using the provided artifact, but the complete training process behind every ensemble component is **not yet reproducible from raw data alone**. Obtain that original implementation to close this gap for the assignment. The notebook explicitly separates the reference artifact from ground-truth labels.
+`experiments/catboost_pipeline.py` trains the current best-reported model using known labels and the original numerical features, with chronological validation and a reproducible submission-generation command. The reported 0.94881 result is a public leaderboard score; no private score is available. The earlier HGB/reference blend used an external reference-prediction file, and its original training code was not supplied, so that historical blend is not reproducible from raw data alone.
 
 ## Setup and execution
 
@@ -92,7 +92,7 @@ Selected HGB settings: learning rate 0.06, 350 iterations, at most 31 leaves, mi
 
 ## Submission history
 
-The user supplied six downloads in chronological order and a Kaggle score screenshot. Attempts 3–6 also match earlier artifacts exactly by SHA-256. Score provenance and hashes are recorded in `results/submission_history.json`.
+The first six submissions are recorded below. The CatBoost result was reported later and is listed separately as the current best public score.
 
 | Attempt | Method / evidence available | Public ROC AUC |
 | --- | --- | ---: |
@@ -102,8 +102,9 @@ The user supplied six downloads in chronological order and a Kaggle score screen
 | 4 | 50% graph HGB + 50% graph ExtraTrees | 0.92196 |
 | 5 | **75% reference + 25% raw HGB** | **0.94770** |
 | 6 | 50% reference + 50% raw HGB | 0.94734 |
+| Latest reported | CatBoostClassifier, depth 8 | **0.94881** |
 
-Attempt 5 improves the reference by 0.00022 public ROC AUC. The private score and official baseline score have not been supplied. Public results cannot establish the final private ranking or guarantee improvement over the official baseline. No test accuracy, precision, recall or F1 is claimed without test labels.
+The depth-8 CatBoost result is 0.00111 ROC AUC above the previous best HGB/reference blend (0.94770). The private score and official baseline score have not been supplied. Public results cannot establish the final private ranking or guarantee improvement over the official baseline. No test accuracy, precision, recall or F1 is claimed without test labels.
 
 ## Project files
 
@@ -145,7 +146,7 @@ The code notebook is named `e1122358.ipynb`. The separate report should be named
 
 ## CatBoost experiment
 
-A standalone CatBoost trial is available in `experiments/catboost_pipeline.py`. It fits only rows with known labels, uses the 165 `feat_*` columns, and keeps transaction IDs and time steps out of the model inputs. Time steps define three chronological validation windows: periods 1–15 to 16–29, 1–21 to 22–35, and 1–25 to 26–35. The final model is refit on all known labels using the median best iteration from those windows. The run is separate from the recorded reference/HGB blend.
+A standalone CatBoost trial is available in `experiments/catboost_pipeline.py`. It fits only rows with known labels, uses the 165 `feat_*` columns, and keeps transaction IDs and time steps out of the model inputs. Time steps define four chronological validation windows: periods 1–15 to 16–29, 1–21 to 22–35, 1–25 to 26–35, and 1–29 to 30–35. The final model is refit on all known labels using the median best iteration across those windows. The latest reported public ROC AUC is 0.94881 for depth 8, making CatBoost the current best-scoring model in this project; the private score is unavailable.
 
 Install the experiment dependencies and run it from the repository root:
 
@@ -154,4 +155,4 @@ python -m pip install -r requirements-catboost.txt
 python -m experiments.catboost_pipeline --data-dir data --output outputs/catboost_submission.csv
 ```
 
-The command writes class-1 probabilities in the sample-submission index order and saves validation details beside the CSV as `catboost_submission.metrics.json`. Use `--skip-validation` to train directly with the configured iteration count. No leaderboard result is recorded until the submission is evaluated by the competition.
+The command writes class-1 probabilities in the sample-submission index order and saves validation details beside the CSV as `catboost_submission.metrics.json`. Use `--skip-validation` to train directly with the configured iteration count. The reported 0.94881 score is public leaderboard feedback; the repository does not contain a private score.
